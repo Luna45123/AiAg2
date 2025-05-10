@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "strict": false,
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["dom", "es6", "es2017", "esnext.asynciterable"],
+    "sourceMap": true,
+    "outDir": "./dist",
+    "moduleResolution": "node",
+    "removeComments": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    
+  },
+  "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts", "**/*.d.ts", "test/**/*", "dist/**/*"],
+  "include": ["./src/**/*.ts","./index.ts", "tools/tools.ts", "agents/weather-agent.ts", "tools/location.ts", "tools/weather.ts", "tools/pm.ts", "entities/location-data.ts", "entities/pm-location-data.ts", "entities/weather-data.ts" ]
+}
