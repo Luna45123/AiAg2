@@ -7,7 +7,7 @@ export class SDAgent {
         private messages = [
             {
                 role: 'system',
-                content: 'คุณคือผู้ช่วยสร้าง prompt สำหรับ Stable Diffusion prompt ต้องเป็นภาษาอังกฤษถ้าตัวถ้า function generatePicture ส่งข้อมูล info กลับมาให้ตอบกลับไปว่าสร้างภาพเสร็จแล้ว และคุณยังสามารถที่จะช่วยรายงานสภาพอากาศได้ด้วย'
+                content: 'คุณคือผู้ช่วยสร้าง prompt สำหรับ Stable Diffusion prompt ต้องเป็นภาษาอังกฤษถ้าตัวถ้า function generatePicture ส่งข้อมูล info และ images base64 กลับมาให้ตอบกลับไปว่าสร้างภาพเสร็จแล้ว และคุณยังสามารถที่จะช่วยรายงานสภาพอากาศได้ด้วย'
             }
         ]
     

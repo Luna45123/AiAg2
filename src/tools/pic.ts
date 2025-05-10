@@ -1,7 +1,5 @@
 import axios from "axios";
-import path from 'path';
-import fs from 'fs';
-import { exec } from "child_process";
+import { buildHtmlFileAndOpen } from "../utils/html";
 
 
 export const generatePicture = async (prompt: string, width: number, height: number): Promise<any> => {
@@ -15,41 +13,13 @@ export const generatePicture = async (prompt: string, width: number, height: num
         width: width,
         height: height,
         sampler_name: 'Euler a',
-        override_settings: {
-            sd_model_checkpoint: "anything-v4.0.ckpt [3b26c9c497]"
-        }
+        // override_settings: {
+        //     sd_model_checkpoint: "v1-5-pruned-emaonly.safetensors [6ce0161689]"
+        // }
     });
 
     const imageBase64 = response.data.images[0]
-    const outputDir = path.resolve("./output");
-    const outputPath = getUniqueFilename(outputDir, 'output', '.png');
-    const imageBuffer = Buffer.from(imageBase64, 'base64')
+    buildHtmlFileAndOpen(imageBase64)
 
-    fs.writeFileSync(outputPath, imageBuffer)
-    console.log('ภาพถูกบันทึกที่:', outputPath)
-
-    const openCommand =
-        process.platform === 'win32'
-            ? `start ${outputPath}`
-            : process.platform === 'darwin'
-                ? `open ${outputPath}`
-                : `xdg-open ${outputPath}`
-
-    exec(openCommand)
-    return JSON.stringify({
-        message: `info ${response.data.info}`,
-        done: true
-    });
-}
-
-function getUniqueFilename(baseDir: string, baseName: string, ext: string): string {
-    let filename = `${baseName}${ext}`;
-    let counter = 1;
-
-    while (fs.existsSync(path.join(baseDir, filename))) {
-        filename = `${baseName}_${counter}${ext}`;
-        counter++;
-    }
-
-    return path.join(baseDir, filename);
+    return response.data.info;
 }

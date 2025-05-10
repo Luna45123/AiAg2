@@ -1,91 +1,98 @@
-import { marked } from "marked";
-import { exec } from "child_process";
-import path from "path";
-import fs from "fs";
+import {exec} from "node:child_process"
+import {marked} from 'marked'
+import * as path from "node:path"
+import process from "node:process"
+import * as fs from "node:fs";
 
+export const generateHtml = (imageBase64?: string) => {
+    return`
+     <!DOCTYPE html>
+    <html lang="th">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ภาพที่สร้างขึ้น</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: #f0f2f5;
+                color: #333;
+                margin: 0;
+                padding: 40px 20px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+            }
 
-export const genarateHTML = (weatherResponse: string, optionalSuggestions: string, conclusion: string): string => {
-    console.log(weatherResponse, optionalSuggestions, conclusion)
-    return `
-        <!DOCTYPE html>
-        <html lang="th">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Weather and Suggestions</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                    color: #333;
-                    max-width: 800px;
-                    margin: 0 auto;
-                    padding: 24px;
-                }   
-                h1 h2 {
-                    color: #4CAF50;
-                }
-                #section {
-                    background-color:rgb(245, 168, 255);
-                    border-radius: 8px;
-                    padding: 16px;
-                    margin-bottom: 24px;
-                }
-            </style>
-  
-        <body>
-            <h1>Activity suggestion</h1>
-            <section>
-                <h2>Weather information</h2>
-                ${marked(weatherResponse)}
-            </section>
-            <section>
-                <h2>suggestions</h2>
-                ${marked(optionalSuggestions)}
-            </section>
-            <section>
-                <h2>Conclusion</h2>
-                ${marked(conclusion)}
-            </section>
-        </body>
-        </html>
-    `;
-};
-export const buildHtmlFileAndOpen = (weatherResponse: string, optionalSuggestions: string, conclusion: string) => {
-    const htmlContent = genarateHTML(weatherResponse, optionalSuggestions, conclusion);
-    const fileName = `output-${new Date().toISOString().slice(0, 10)}.html`;
-    const filePath = path.join(__dirname, fileName);
-    fs.writeFile(filePath, htmlContent, (error) => {
-        if (error) {
-            console.error(`Error writing HTML file: ${error.message}`);
-        } else {
-            openInBrowser(filePath);
-        }
-    });
+            .container {
+                background: #ffffff;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+                max-width: 800px;
+                width: 100%;
+                text-align: center;
+            }
+
+            h1 {
+                color: #0077cc;
+                margin-bottom: 20px;
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            footer {
+                margin-top: 20px;
+                font-size: 0.9rem;
+                color: #777;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>ภาพที่สร้างขึ้น</h1>
+            ${
+                imageBase64
+                    ? `<img src="data:image/png;base64,${imageBase64}" alt="Generated Image" />`
+                    : `<p>ไม่พบภาพ</p>`
+            }
+            <footer>
+                สร้างโดยระบบ AI ณ เวลา ${new Date().toLocaleString('th-TH')}
+            </footer>
+        </div>
+    </body>
+    </html>
+    `
 }
-export const openInBrowser = (fileName: string) => {
-    const filePath: string = require('path').resolve(fileName);
-        const command = process.platform === 'win32' ? 'start' : process.platform === 'darwin' ? 'open' : 'xdg-open';
 
-        fs.writeFile(filePath, "", (error) => {
-            if (error) {
-                console.error(`Error opening file: ${error.message}`);
-            } else {
-                exec(`${command} ${filePath}`, (error) => {
-                    if (error) {
-                        console.error(`Error opening file: ${error.message}`);
-                    } else {
-                        console.log(`File opened successfully: ${filePath}`);
-                    }
-                });
-            }
-        });
-        exec(`${command} ${filePath}`, (error) => {
-            if (error) {
-                console.error(`Error opening file: ${error.message}`);
-            } else {
-                console.log(`File opened successfully: ${filePath}`);
-            }
+export const buildHtmlFileAndOpen = (
+  imageBase64?: string // เพิ่มเข้ามา
+) => {
+  const html = generateHtml(imageBase64)
+  const fileName = 'activity_suggestion.html'
+  fs.writeFile(fileName, html, (err) => {
+    if (err) {
+      console.error(`Error writing file: ${err}`)
+      return
+    }
+    console.log(`HTML file created: ${fileName}`)
+    openInBrowser(fileName)
+  })
+}
+
+export const openInBrowser = (fileName: string) => {
+    const filePath = path.resolve(fileName)
+    const command = process.platform === 'win32'? 'start' : process.platform === 'darwin'? 'open' : 'xdg-open'
+
+    exec(`${command} ${filePath}`, (error) => {
+        if(error) {
+            console.error(`Error opening file: ${error}`)
         }
-    )
+    })
 }
